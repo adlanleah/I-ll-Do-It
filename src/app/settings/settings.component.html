@@ -1,0 +1,112 @@
+<ion-header class="ion-no-border">
+  <div class="settings-header">
+    <button class="back-btn">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </button>
+    <h1>Settings</h1>
+    <div class="spacer"></div>
+  </div>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="scroll-content">
+    
+    <section class="settings-group">
+      <h3 class="group-title">Account</h3>
+      <div class="list-container">
+        <div class="list-item">
+          <div class="item-left">
+            <div class="icon-box"><ion-icon name="person-outline"></ion-icon></div>
+            <span>Profile</span>
+          </div>
+          <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
+        </div>
+        <div class="list-item no-border">
+          <div class="item-left">
+            <div class="icon-box"><ion-icon name="cloud-sync-outline"></ion-icon></div>
+            <span>Sync Preferences</span>
+          </div>
+          <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-group">
+      <h3 class="group-title">App Preferences</h3>
+      <div class="list-container">
+        <div class="list-item">
+          <div class="item-left">
+            <div class="icon-box"><ion-icon name="notifications-outline"></ion-icon></div>
+            <span>Notifications</span>
+          </div>
+          <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
+        </div>
+        
+        <div class="list-item no-border" (click)="toggleTheme()">
+          <div class="item-left">
+            <div class="icon-box"><ion-icon name="moon-outline"></ion-icon></div>
+            <div class="label-stack">
+              <span>Appearance</span>
+              <small>Dark Mode</small>
+            </div>
+          </div>
+          <div class="custom-toggle" [class.active]="isDarkMode()">
+            <div class="toggle-handle"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-group">
+      <h3 class="group-title">About</h3>
+      <div class="list-container">
+        <div class="list-item">
+          <div class="item-left">
+            <div class="icon-box"><ion-icon name="help-circle-outline"></ion-icon></div>
+            <span>Help Center</span>
+          </div>
+          <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
+        </div>
+        <div class="list-item no-border">
+          <div class="item-left">
+            <div class="icon-box"><ion-icon name="information-circle-outline"></ion-icon></div>
+            <span>About Version</span>
+          </div>
+          <div class="item-right">
+            <span class="version-tag">{{ appVersion }}</span>
+            <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="danger-zone">
+      <button class="logout-btn" (click)="logout()">
+        <ion-icon name="log-out-outline"></ion-icon>
+        Sign Out
+      </button>
+    </div>
+
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <nav class="bottom-nav">
+    <a href="#" class="nav-item">
+      <ion-icon name="list-outline"></ion-icon>
+      <span>Tasks</span>
+    </a>
+    <a href="#" class="nav-item">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <span>Calendar</span>
+    </a>
+    <a href="#" class="nav-item">
+      <ion-icon name="timer-outline"></ion-icon>
+      <span>Focus</span>
+    </a>
+    <a href="#" class="nav-item active">
+      <ion-icon name="settings"></ion-icon>
+      <span>Settings</span>
+    </a>
+  </nav>
+</ion-footer>

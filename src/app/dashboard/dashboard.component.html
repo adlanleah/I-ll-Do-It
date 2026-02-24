@@ -1,0 +1,96 @@
+<ion-content [fullscreen]="true" class="ion-no-padding">
+  <div class="dashboard-container">
+    
+    <header class="header">
+      <div class="welcome">
+        <h1>My Tasks</h1>
+        <p class="summary">{{ authService.tasks().length }} tasks total</p>
+      </div>
+      <div class="actions">
+        <button class="settings-btn" routerLink="/settings">
+          <ion-icon name="settings-outline"></ion-icon>
+        </button>
+        <div class="avatar"></div>
+      </div>
+    </header>
+
+    <div class="search-section">
+      <div class="search-box">
+        <ion-icon name="search-outline" class="search-icon"></ion-icon>
+        <input type="text" placeholder="Search tasks..." class="search-input">
+      </div>
+    </div>
+
+    <div class="tabs-scroll">
+      <button class="tab active">Today</button>
+      <button class="tab">Upcoming</button>
+      <button class="tab">Completed</button>
+      <button class="tab">All</button>
+    </div>
+
+    <h3 class="section-title">Today's Priority</h3>
+
+    <div class="task-list">
+      @for (task of authService.tasks(); track task.id) {
+        <div class="task-card" [class.is-completed]="task.completed">
+          
+          <div class="check-container" (click)="toggleTask(task)">
+            <div class="custom-checkbox" [class.checked]="task.completed">
+              @if (task.completed) { 
+                <ion-icon name="checkmark-sharp"></ion-icon> 
+              }
+            </div>
+          </div>
+          
+          <div class="task-info">
+            <h4 class="task-title">{{ task.title }}</h4>
+            <div class="task-meta">
+              <ion-icon [name]="task.icon || 'time-outline'"></ion-icon>
+              <span>{{ task.time || 'All Day' }}</span>
+            </div>
+          </div>
+
+          @if (task.priority) {
+            <div class="priority-tag" [attr.data-priority]="task.priority">
+              {{ task.priority }}
+            </div>
+          }
+          
+          <button class="delete-btn" (click)="authService.deleteTask(task.id)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+      } @empty {
+        <div class="empty-state">
+          <p class="text-center text-slate-500">No tasks found. Tap + to add one!</p>
+        </div>
+      }
+    </div>
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="custom-fab">
+      <ion-fab-button routerLink="/add-task">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+
+    <nav class="bottom-nav">
+      <a routerLink="/dashboard" class="nav-item active">
+        <ion-icon name="grid"></ion-icon>
+        <span>Tasks</span>
+      </a>
+      <a routerLink="/calendar" class="nav-item">
+        <ion-icon name="calendar-clear-outline"></ion-icon>
+        <span>Calendar</span>
+      </a>
+      <a routerLink="/stats" class="nav-item">
+        <ion-icon name="analytics-outline"></ion-icon>
+        <span>Stats</span>
+      </a>
+      <a routerLink="/settings" class="nav-item">
+        <ion-icon name="person-outline"></ion-icon>
+        <span>Profile</span>
+      </a>
+    </nav>
+
+  </div>
+</ion-content>

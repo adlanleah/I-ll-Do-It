@@ -1,0 +1,58 @@
+<ion-content [fullscreen]="true" class="ion-no-padding">
+  <div class="page-wrap">
+
+    <div class="app-bar">
+      <div class="icon-circle">
+        <ion-icon name="close-outline"></ion-icon>
+      </div>
+      <button class="skip-btn" routerLink="/signup">Skip</button>
+    </div>
+
+    <div class="illustration-area">
+      <div class="hero-card">
+        <div class="glow-blob"></div>
+        <div class="task-stack">
+          <div class="task-card shift-right">
+            <div class="checkbox empty"></div>
+            <div class="skeleton short"></div>
+          </div>
+          <div class="task-card shift-left highlight">
+            <div class="checkbox filled">
+              <ion-icon name="checkmark-sharp"></ion-icon>
+            </div>
+            <div class="skeleton long"></div>
+          </div>
+          <div class="task-card shift-right-sm">
+            <div class="checkbox empty"></div>
+            <div class="skeleton medium"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-area">
+      <h1 class="title">Organize your life</h1>
+      <p class="subtitle">
+        The simplest way to track your daily tasks, set reminders, and hit your productivity goals every single day.
+      </p>
+
+      <div class="dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn-primary" routerLink="/signup">
+          Get Started
+          <ion-icon name="arrow-forward-outline"></ion-icon>
+        </button>
+        <button class="btn-ghost" routerLink="/login">
+          Already have an account? <span>Log In</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="safe-area"></div>
+  </div>
+</ion-content>

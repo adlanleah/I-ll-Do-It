@@ -1,0 +1,73 @@
+<ion-header class="ion-no-border">
+  <div class="custom-header">
+    <button class="cancel-btn" type="button" routerLink="/dashboard">Cancel</button>
+    <h1>New Task</h1>
+    <div class="spacer"></div>
+  </div>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-no-padding">
+  <form [formGroup]="taskForm" id="taskForm" class="form-container" (ngSubmit)="onSave()">
+    
+    <div class="input-section">
+      <label class="section-label">Task Title</label>
+      <input 
+        type="text" 
+        formControlName="title" 
+        placeholder="What needs to be done?" 
+        class="title-input"
+        [class.invalid]="taskForm.controls.title.touched && taskForm.controls.title.invalid">
+      
+      @if (taskForm.controls.title.touched && taskForm.controls.title.errors?.['required']) {
+        <small class="error-text">Title is required</small>
+      }
+    </div>
+
+    <div class="input-section">
+      <label class="section-label">Description</label>
+      <textarea 
+        formControlName="description" 
+        placeholder="Add more details..." 
+        rows="4" 
+        class="desc-input"></textarea>
+    </div>
+
+    <div class="input-section">
+      <label class="section-label">Priority</label>
+      <div class="priority-toggle">
+        @for (p of priorities; track p) {
+          <button 
+            type="button"
+            class="p-btn"
+            [class.active]="taskForm.controls.priority.value === p"
+            (click)="setPriority(p)">
+            {{ p }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="extra-option">
+      <div class="option-left">
+        <div class="icon-circle">
+          <ion-icon name="pricetag-outline"></ion-icon>
+        </div>
+        <span>Add Category</span>
+      </div>
+      <ion-icon name="add-outline" class="icon-muted"></ion-icon>
+    </div>
+
+  </form>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <div class="footer-padding">
+    <button 
+      type="submit"
+      form="taskForm"
+      class="save-btn" 
+      [disabled]="taskForm.invalid">
+      Save Task
+    </button>
+  </div>
+</ion-footer>

@@ -1,0 +1,102 @@
+:host {
+  --primary: #13ecc8;
+  --bg-dark: #10221f;
+  --text-main: #f1f5f9;
+  --text-muted: #64748b;
+  --field-bg: rgba(19, 236, 200, 0.05);
+}
+
+ion-content, ion-header, ion-footer {
+  --background: var(--bg-dark);
+  background: var(--bg-dark);
+}
+
+/* Header */
+.custom-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 16px;
+  border-bottom: 1px solid rgba(19, 236, 200, 0.1);
+  backdrop-filter: blur(20px);
+}
+
+.custom-header h1 { font-size: 18px; font-weight: 700; color: var(--text-main); margin: 0; }
+.cancel-btn { background: transparent; color: var(--primary); font-size: 16px; font-weight: 500; }
+.spacer { width: 50px; }
+
+/* Form Layout */
+.form-container { padding: 24px; display: flex; flex-direction: column; gap: 24px; }
+.section-label { 
+  display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; 
+  letter-spacing: 1px; color: rgba(19, 236, 200, 0.6); margin-bottom: 10px; padding-left: 4px;
+}
+
+/* Inputs */
+.title-input, .desc-input {
+  width: 100%; background: var(--field-bg); border: none; border-radius: 12px;
+  color: white; padding: 16px; font-size: 16px; transition: all 0.2s;
+}
+.title-input { font-size: 18px; }
+.title-input:focus, .desc-input:focus { outline: 2px solid rgba(19, 236, 200, 0.3); }
+.error { outline: 2px solid #ef4444 !important; }
+
+/* Date Trigger */
+.picker-trigger {
+  display: flex; align-items: center; background: var(--field-bg); 
+  padding: 16px; border-radius: 12px; gap: 12px;
+}
+.placeholder-text { flex: 1; color: var(--text-muted); }
+.icon-primary { color: var(--primary); font-size: 20px; }
+.icon-muted { color: var(--text-muted); font-size: 18px; }
+
+/* Priority Toggle */
+.priority-toggle {
+  display: flex; background: rgba(19, 236, 200, 0.1); padding: 4px; border-radius: 12px; gap: 4px;
+}
+.p-btn {
+  flex: 1; padding: 10px; border-radius: 8px; background: transparent;
+  color: var(--text-muted); font-weight: 600; font-size: 14px; transition: all 0.2s;
+}
+.p-btn.active { background: var(--primary); color: var(--bg-dark); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+/* Extra Options */
+.extra-option {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 0; border-top: 1px solid rgba(19, 236, 200, 0.1); margin-top: 8px;
+}
+.option-left { display: flex; align-items: center; gap: 12px; color: var(--text-main); font-weight: 500; }
+.icon-circle { 
+  width: 32px; height: 32px; border-radius: 50%; background: rgba(19, 236, 200, 0.2);
+  display: flex; align-items: center; justify-content: center; color: var(--primary);
+}
+
+/* Footer */
+.footer-padding { padding: 16px 24px 40px; }
+.save-btn {
+  width: 100%; padding: 18px; border-radius: 16px; background: var(--primary);
+  color: var(--bg-dark); font-weight: 700; font-size: 18px;
+  box-shadow: 0 10px 20px rgba(19, 236, 200, 0.2);
+}
+.save-btn:active { transform: scale(0.98); }
+
+/* ... Previous CSS remains ... */
+
+.title-input.invalid {
+  border: 1px solid #ef4444;
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.error-text {
+  color: #ef4444;
+  font-size: 11px;
+  margin-top: 4px;
+  display: block;
+  font-weight: 600;
+}
+
+.save-btn:disabled {
+  opacity: 0.4;
+  filter: grayscale(1);
+  cursor: not-allowed;
+}
