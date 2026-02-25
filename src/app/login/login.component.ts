@@ -2,6 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonContent, IonTitle, IonButton, IonIcon, IonHeader, IonToolbar, IonButtons, IonLabel, IonItem, IonInput, IonSpinner } from "@ionic/angular/standalone";
 import { AuthService } from '../Services/auth';
+import { addIcons } from 'ionicons';
+import { alertCircleOutline, checkboxOutline, closeOutline, eyeOffOutline, eyeOutline, logoApple } from 'ionicons/icons';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +32,9 @@ export class LoginComponent  implements OnInit {
   }
   
 
-  constructor() { }
+  constructor() { 
+    addIcons({closeOutline, checkboxOutline, alertCircleOutline, eyeOffOutline, eyeOutline, logoApple})
+  }
 
   ngOnInit() {}
 

@@ -1,14 +1,16 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { IonHeader, IonItem, IonToolbar, IonButtons, IonButton, IonTitle, IonContent, IonLabel, IonInput, IonTextarea, IonIcon, IonDatetimeButton, IonModal, IonDatetime, IonSegment, IonSegmentButton, IonList, IonFooter } from "@ionic/angular/standalone";
+import { Router, RouterLink } from '@angular/router';
+import { IonHeader,IonContent,IonIcon,IonFooter } from "@ionic/angular/standalone";
 import { AuthService } from '../Services/auth';
+import { addIcons } from 'ionicons';
+import { addOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-task',
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.scss'],
-  imports: [IonHeader, ReactiveFormsModule, IonFooter, IonIcon, IonContent],
+  imports: [IonHeader, ReactiveFormsModule, IonFooter, IonIcon, IonContent, RouterLink],
 })
 export class TaskComponent  implements OnInit {
   authService = inject(AuthService);
@@ -41,7 +43,9 @@ export class TaskComponent  implements OnInit {
     }
   }
 
-  constructor() { }
+  constructor() {
+    addIcons({addOutline})
+   }
 
   ngOnInit() {}
 

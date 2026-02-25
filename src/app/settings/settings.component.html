@@ -10,6 +10,14 @@
 
 <ion-content [fullscreen]="true">
   <div class="scroll-content">
+    <section class="profile-section">
+  <ion-avatar class="profile-avatar" (click)="pickImage()">
+    <img [src]="userProfileImage" alt="Profile" />
+  </ion-avatar>
+
+  <h2 class="profile-name">Your Name</h2>
+  <p class="change-text">Tap to change photo</p>
+</section>
     
     <section class="settings-group">
       <h3 class="group-title">Account</h3>
@@ -92,20 +100,20 @@
 
 <ion-footer class="ion-no-border">
   <nav class="bottom-nav">
-    <a href="#" class="nav-item">
+    <a routerLink="/dashboard" class="nav-item">
       <ion-icon name="list-outline"></ion-icon>
       <span>Tasks</span>
     </a>
-    <a href="#" class="nav-item">
+    <a routerLink="/" class="nav-item">
       <ion-icon name="calendar-outline"></ion-icon>
       <span>Calendar</span>
     </a>
-    <a href="#" class="nav-item">
+    <a routerLink="/" class="nav-item">
       <ion-icon name="timer-outline"></ion-icon>
       <span>Focus</span>
     </a>
-    <a href="#" class="nav-item active">
-      <ion-icon name="settings"></ion-icon>
+    <a routerLink="/settings" class="nav-item active">
+      <ion-icon name="settings-outline"></ion-icon>
       <span>Settings</span>
     </a>
   </nav>

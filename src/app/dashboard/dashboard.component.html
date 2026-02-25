@@ -10,7 +10,9 @@
         <button class="settings-btn" routerLink="/settings">
           <ion-icon name="settings-outline"></ion-icon>
         </button>
-        <div class="avatar"></div>
+        <ion-avatar class="avatar">
+          <img [src]="userProfileImage" alt="Profile" />
+        </ion-avatar>
       </div>
     </header>
 

@@ -3,6 +3,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { IonContent, IonTitle, IonHeader, IonButton, IonToolbar, IonButtons, IonBackButton, IonLabel, IonItem, IonIcon, IonInput, IonSpinner } from "@ionic/angular/standalone";
 import { AuthService } from '../Services/auth';
 import { RouterLink } from '@angular/router';
+import { addIcons } from 'ionicons';
+import { alertCircleOutline, chevronBackOutline, eyeOffOutline, eyeOutline, logoApple } from 'ionicons/icons';
 
 @Component({
   selector: 'app-signup',
@@ -39,7 +41,9 @@ export class SignupComponent  implements OnInit {
   togglePassword() {
     this.showPassword = !this.showPassword;
   }
-  constructor() { }
+  constructor() {
+    addIcons({chevronBackOutline, alertCircleOutline, eyeOffOutline, eyeOutline, logoApple})
+   }
 
   ngOnInit() {}
 
