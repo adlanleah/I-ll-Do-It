@@ -1,0 +1,124 @@
+<ion-content [fullscreen]="true" class="stats-bg">
+  <div class="main-wrapper">
+
+    <!-- Header -->
+    <header class="header">
+      <button class="icon-btn" routerLink="/dashboard">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </button>
+      <h2>Productivity Stats</h2>
+      <button class="icon-btn">
+        <ion-icon name="calendar-outline"></ion-icon>
+      </button>
+    </header>
+
+    <!-- Period Tabs -->
+    <div class="period-tabs">
+      @for (p of periods; track p) {
+        <button class="period-tab" [class.active]="activePeriod() === p" (click)="setPeriod(p)">
+          {{ p }}
+        </button>
+      }
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-grid">
+      <div class="stat-card">
+        <span class="label">Completed</span>
+        <span class="value">{{ completedTasks() }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="label">Efficiency</span>
+        <span class="value">{{ completionRate() }}%</span>
+      </div>
+      <div class="stat-card">
+        <span class="label">Streak</span>
+        <span class="value">{{ streakDays() }}d</span>
+      </div>
+    </div>
+
+    <!-- Task Distribution Donut -->
+    <div class="chart-section">
+      <h3>Task Distribution</h3>
+      <div class="donut-container">
+        <div class="donut-wrap">
+          <svg viewBox="0 0 36 36" class="donut-svg">
+            <circle class="track" cx="18" cy="18" r="15.9"></circle>
+            <circle class="progress" cx="18" cy="18" r="15.9"
+                    [style.stroke-dasharray]="strokeDashArray()"></circle>
+          </svg>
+          <div class="donut-text">
+            <span class="percent">{{ completionRate() }}%</span>
+            <span class="sub">GOAL</span>
+          </div>
+        </div>
+
+        <div class="legend">
+          <div class="legend-item">
+            <div class="dot primary"></div>
+            <div>
+              <p class="legend-label">Completed</p>
+              <p class="legend-value">{{ completedTasks() }} <span class="legend-unit">tasks</span></p>
+            </div>
+          </div>
+          <div class="legend-item">
+            <div class="dot dim"></div>
+            <div>
+              <p class="legend-label">Pending</p>
+              <p class="legend-value">{{ pendingTasks() }} <span class="legend-unit">tasks</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bar Chart (period-aware) -->
+    <div class="chart-section">
+      <div class="chart-header">
+        <h3>{{ chartTitle() }}</h3>
+        <span class="perf-badge" [class.negative]="!perfPositive()">
+          <ion-icon [name]="perfPositive() ? 'trending-up-outline' : 'trending-down-outline'"></ion-icon>
+          {{ perfDelta() }}
+        </span>
+      </div>
+      <div class="bar-chart">
+        @for (item of chartData(); track item.day) {
+          <div class="bar-col">
+            <div class="bar-track">
+              <div class="bar"
+                   [style.height.%]="item.height"
+                   [class.active]="item.isToday"></div>
+            </div>
+            <span class="day-label" [class.active-text]="item.isToday">{{ item.day }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Insights -->
+    <div class="insights-section">
+      <h3 class="insights-title">Insights</h3>
+
+      <div class="insight-card">
+        <div class="icon-box bolt">
+          <ion-icon name="flash-outline"></ion-icon>
+        </div>
+        <div class="insight-text">
+          <p class="insight-title">Peak Performance</p>
+          <p class="insight-desc">{{ peakInsight() }}</p>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <div class="icon-box" [class.warn]="pendingTasks() > 0" [class.ok]="pendingTasks() === 0">
+          <ion-icon [name]="pendingTasks() > 0 ? 'warning-outline' : 'checkmark-circle-outline'"></ion-icon>
+        </div>
+        <div class="insight-text">
+          <p class="insight-title">{{ pendingTasks() > 0 ? 'Pending Backlog' : 'All Clear!' }}</p>
+          <p class="insight-desc">{{ backlogInsight() }}</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

@@ -1,19 +1,26 @@
 <ion-content [fullscreen]="true" class="ion-no-padding">
   <div class="login-container">
+
+    <div class="glow glow-top"></div>
+    <div class="glow glow-bottom"></div>
+
+    <!-- Top Bar -->
     <header class="top-bar">
       <button class="icon-btn" routerLink="/">
         <ion-icon name="close-outline"></ion-icon>
       </button>
     </header>
 
+    <!-- Hero -->
     <div class="header-section">
       <div class="logo-box">
-        <ion-icon name="checkbox-outline" class="logo-icon"></ion-icon>
+        <ion-icon name="checkmark-circle-outline" class="logo-icon"></ion-icon>
       </div>
       <h1 class="title">Welcome Back</h1>
       <p class="subtitle">Ready to conquer your tasks?</p>
     </div>
 
+    <!-- Error Banner -->
     @if (authService.authError()) {
       <div class="error-banner">
         <ion-icon name="alert-circle-outline"></ion-icon>
@@ -21,26 +28,32 @@
       </div>
     }
 
+    <!-- Form -->
     <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="form-group">
+
+      <!-- Email -->
       <div class="input-wrapper">
         <label class="input-label">Email Address</label>
-        <input 
-          type="email" 
-          formControlName="email" 
-          placeholder="name@example.com"
-          class="custom-input"
-          [class.invalid]="loginForm.controls.email.touched && loginForm.controls.email.invalid">
+        <div class="field-box">
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="name@example.com"
+            class="custom-input"
+            [class.invalid]="loginForm.controls.email.touched && loginForm.controls.email.invalid">
+        </div>
       </div>
 
+      <!-- Password -->
       <div class="input-wrapper">
         <div class="label-row">
           <label class="input-label">Password</label>
           <button type="button" class="link-btn">Forgot Password?</button>
         </div>
-        <div class="password-container">
-          <input 
-            [type]="showPassword ? 'text' : 'password'" 
-            formControlName="password" 
+        <div class="field-box password-box">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
             placeholder="Enter your password"
             class="custom-input"
             [class.invalid]="loginForm.controls.password.touched && loginForm.controls.password.invalid">
@@ -50,6 +63,7 @@
         </div>
       </div>
 
+      <!-- Submit -->
       <button type="submit" class="btn-primary" [disabled]="loginForm.invalid || authService.isLoadingEmail()">
         @if (authService.isLoadingEmail()) {
           <ion-spinner name="crescent"></ion-spinner>
@@ -57,37 +71,40 @@
           Log In
         }
       </button>
+
     </form>
 
+    <!-- Divider -->
     <div class="divider">
       <div class="line"></div>
       <span class="divider-text">OR CONTINUE WITH</span>
       <div class="line"></div>
     </div>
 
+    <!-- Social Buttons — side by side like signup -->
     <div class="social-group">
-      <button class="btn-social google" (click)="authService.loginWithGoogle()" [disabled]="authService.isLoadingGoogle()">
+      <button class="btn-social" (click)="authService.loginWithGoogle()" [disabled]="authService.isLoadingGoogle()">
         @if (authService.isLoadingGoogle()) {
-          <ion-spinner name="crescent" color="dark"></ion-spinner>
+          <ion-spinner name="crescent"></ion-spinner>
         } @else {
           <img src="https://authjs.dev/img/providers/google.svg" alt="Google" class="social-icon">
-          Continue with Google
+          <span>Continue with Google</span>
         }
       </button>
-      
-      <button class="btn-social apple">
+
+      <button class="btn-social">
         <ion-icon name="logo-apple"></ion-icon>
-        Continue with Apple
+        <span>Continue with Apple</span>
       </button>
     </div>
 
+    <!-- Footer -->
     <footer class="footer">
-      <p>Don't have an account? 
+      <p>
+        Don't have an account?
         <button class="link-btn bold" routerLink="/signup">Sign up</button>
       </p>
     </footer>
 
-    <div class="glow glow-top"></div>
-    <div class="glow glow-bottom"></div>
   </div>
 </ion-content>

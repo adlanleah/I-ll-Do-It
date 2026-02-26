@@ -1,10 +1,11 @@
 <ion-content [fullscreen]="true" class="ion-no-padding">
   <div class="dashboard-container">
-    
+
+    <!-- Header -->
     <header class="header">
       <div class="welcome">
         <h1>My Tasks</h1>
-        <p class="summary">{{ authService.tasks().length }} tasks total</p>
+        <p class="summary">{{ taskCountLabel() }}</p>
       </div>
       <div class="actions">
         <button class="settings-btn" routerLink="/settings">
@@ -16,65 +17,102 @@
       </div>
     </header>
 
+    <!-- Search -->
     <div class="search-section">
       <div class="search-box">
         <ion-icon name="search-outline" class="search-icon"></ion-icon>
-        <input type="text" placeholder="Search tasks..." class="search-input">
+        <input
+          type="text"
+          placeholder="Search tasks..."
+          class="search-input"
+          [(ngModel)]="searchQuery"
+          (input)="onSearch()">
+        @if (searchQuery) {
+          <button class="search-clear" (click)="clearSearch()">
+            <ion-icon name="close-outline"></ion-icon>
+          </button>
+        }
       </div>
     </div>
 
+    <!-- Tabs -->
     <div class="tabs-scroll">
-      <button class="tab active">Today</button>
-      <button class="tab">Upcoming</button>
-      <button class="tab">Completed</button>
-      <button class="tab">All</button>
+      @for (tab of tabs; track tab.key) {
+        <button
+          class="tab"
+          [class.active]="activeTab() === tab.key"
+          (click)="setTab(tab.key)">
+          {{ tab.label }}
+          @if (tab.count() > 0) {
+            <span class="tab-badge">{{ tab.count() }}</span>
+          }
+        </button>
+      }
     </div>
 
-    <h3 class="section-title">Today's Priority</h3>
+    <!-- Section Title -->
+    <h3 class="section-title">{{ sectionTitle() }}</h3>
 
+    <!-- Task List -->
     <div class="task-list">
-      @for (task of authService.tasks(); track task.id) {
+      @for (task of filteredTasks(); track task.id) {
         <div class="task-card" [class.is-completed]="task.completed">
-          
+
+          <!-- Checkbox -->
           <div class="check-container" (click)="toggleTask(task)">
             <div class="custom-checkbox" [class.checked]="task.completed">
-              @if (task.completed) { 
-                <ion-icon name="checkmark-sharp"></ion-icon> 
+              @if (task.completed) {
+                <ion-icon name="checkmark-sharp"></ion-icon>
               }
             </div>
           </div>
-          
+
+          <!-- Info -->
           <div class="task-info">
             <h4 class="task-title">{{ task.title }}</h4>
             <div class="task-meta">
-              <ion-icon [name]="task.icon || 'time-outline'"></ion-icon>
-              <span>{{ task.time || 'All Day' }}</span>
+              <ion-icon [name]="task.completed ? 'checkmark-circle-outline' : (task.deadline ? 'calendar-outline' : 'time-outline')"></ion-icon>
+              <span>{{ task.completed ? 'Completed' : formatDeadline(task.deadline) }}</span>
             </div>
           </div>
 
-          @if (task.priority) {
+          <!-- Priority tag -->
+          @if (task.priority && !task.completed) {
             <div class="priority-tag" [attr.data-priority]="task.priority">
               {{ task.priority }}
             </div>
           }
-          
-          <button class="delete-btn" (click)="authService.deleteTask(task.id)">
+
+          <!-- Delete -->
+          <button class="delete-btn" (click)="deleteTask(task.id)">
             <ion-icon name="trash-outline"></ion-icon>
           </button>
+
         </div>
-      } @empty {
+      }
+
+      <!-- Empty state -->
+      @if (filteredTasks().length === 0) {
         <div class="empty-state">
-          <p class="text-center text-slate-500">No tasks found. Tap + to add one!</p>
+          <ion-icon [name]="emptyIcon()"></ion-icon>
+          <p>{{ emptyMessage() }}</p>
+          @if (activeTab() === 'today' || activeTab() === 'all') {
+            <button class="empty-add-btn" routerLink="/add-task">
+              <ion-icon name="add-outline"></ion-icon> Add a task
+            </button>
+          }
         </div>
       }
     </div>
 
+    <!-- FAB -->
     <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="custom-fab">
       <ion-fab-button routerLink="/add-task">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
     </ion-fab>
 
+    <!-- Bottom Nav -->
     <nav class="bottom-nav">
       <a routerLink="/dashboard" class="nav-item active">
         <ion-icon name="grid"></ion-icon>

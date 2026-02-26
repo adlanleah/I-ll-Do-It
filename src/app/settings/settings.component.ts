@@ -1,36 +1,37 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { IonContent, IonIcon, IonFooter, IonHeader, IonAvatar } from "@ionic/angular/standalone";
 import { AuthService } from '../Services/auth';
-import {Camera, CameraResultType} from "@capacitor/camera"
+import { Camera, CameraResultType } from "@capacitor/camera";
 import { addIcons } from 'ionicons';
-import { add, calendarOutline, listOutline, settingsOutline, timerOutline, trashOutline } from 'ionicons/icons';
+import {calendarClearOutline, calendarOutline, cameraOutline, chevronBackOutline, chevronForwardOutline,
+  cloudyOutline, gridOutline, helpCircleOutline, informationCircleOutline,
+  logOutOutline, moonOutline, notificationsOutline, personOutline,
+  settingsOutline, timerOutline
+} from 'ionicons/icons';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
-  imports: [IonContent, IonIcon, IonFooter, IonHeader, IonAvatar, IonHeader, RouterLink],
+  imports: [IonContent, IonIcon, IonFooter, IonHeader, IonAvatar, RouterLink],
 })
-export class SettingsComponent  implements OnInit {
+export class SettingsComponent implements OnInit {
   authService = inject(AuthService);
-  isDarkMode = signal(true);
-  appVersion = '2.4.0';
+  isDarkMode  = signal(true);
+  appVersion  = '2.4.0';
+  userProfileImage = 'assets/icon/Todo-Logo.png';
 
-  userProfileImage: string = "assets/icon/Todo-Logo.png";
-
-async pickImage() {
-  const image = await Camera.getPhoto({
-    resultType: CameraResultType.Uri,
-    quality: 60,
-  });
-
-  if (image.webPath) {
-    this.userProfileImage = image.webPath;
-    localStorage.setItem('profileImage', image.webPath);
+  async pickImage() {
+    const image = await Camera.getPhoto({
+      resultType: CameraResultType.Uri,
+      quality: 60,
+    });
+    if (image.webPath) {
+      this.userProfileImage = image.webPath;
+      localStorage.setItem('profileImage', image.webPath);
+    }
   }
-}
-
 
   toggleTheme() {
     this.isDarkMode.update(v => !v);
@@ -42,14 +43,17 @@ async pickImage() {
   }
 
   constructor() {
-    addIcons({add, trashOutline, settingsOutline, calendarOutline, listOutline, timerOutline})
-   }
+    addIcons({
+      cameraOutline, chevronBackOutline, chevronForwardOutline,
+      personOutline, cloudyOutline, notificationsOutline,
+      moonOutline, helpCircleOutline, informationCircleOutline,
+      logOutOutline, settingsOutline, calendarOutline,
+      calendarClearOutline, gridOutline, timerOutline
+    });
+  }
 
   ngOnInit() {
-     const savedImage = localStorage.getItem('profileImage');
-  if (savedImage) {
-    this.userProfileImage = savedImage;
+    const saved = localStorage.getItem('profileImage');
+    if (saved) this.userProfileImage = saved;
   }
-  }
-
 }

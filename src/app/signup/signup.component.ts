@@ -1,10 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonContent, IonTitle, IonHeader, IonButton, IonToolbar, IonButtons, IonBackButton, IonLabel, IonItem, IonIcon, IonInput, IonSpinner } from "@ionic/angular/standalone";
+import { IonContent, IonIcon, IonSpinner } from "@ionic/angular/standalone";
 import { AuthService } from '../Services/auth';
 import { RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { alertCircleOutline, chevronBackOutline, eyeOffOutline, eyeOutline, logoApple } from 'ionicons/icons';
+import {alertCircleOutline, chevronBackOutline, eyeOffOutline, eyeOutline,lockClosedOutline, logoApple, mailOutline, personOutline} from 'ionicons/icons';
 
 @Component({
   selector: 'app-signup',
@@ -12,23 +12,14 @@ import { alertCircleOutline, chevronBackOutline, eyeOffOutline, eyeOutline, logo
   styleUrls: ['./signup.component.scss'],
   imports: [IonContent, ReactiveFormsModule, IonIcon, IonSpinner, RouterLink],
 })
-export class SignupComponent  implements OnInit {
+export class SignupComponent implements OnInit {
   authService = inject(AuthService);
-  showPassword = false
+  showPassword = false;
 
- signupForm = new FormGroup({
-    fullName: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(2)]
-    }),
-    email: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.email]
-    }),
-    password: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(8)]
-    })
+  signupForm = new FormGroup({
+    fullName: new FormControl('',[Validators.required, Validators.minLength(2)]),
+    email: new FormControl('',  [Validators.required, Validators.email]),
+    password: new FormControl('',[Validators.required, Validators.minLength(8)])
   });
 
   async onSignup() {
@@ -41,10 +32,14 @@ export class SignupComponent  implements OnInit {
   togglePassword() {
     this.showPassword = !this.showPassword;
   }
+
   constructor() {
-    addIcons({chevronBackOutline, alertCircleOutline, eyeOffOutline, eyeOutline, logoApple})
-   }
+    addIcons({
+      chevronBackOutline, alertCircleOutline,
+      eyeOutline, eyeOffOutline, logoApple,
+      personOutline, mailOutline, lockClosedOutline
+    });
+  }
 
   ngOnInit() {}
-
 }

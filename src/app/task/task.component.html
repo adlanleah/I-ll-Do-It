@@ -6,37 +6,140 @@
   </div>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-no-padding">
+<ion-content class="ion-no-padding">
   <form [formGroup]="taskForm" id="taskForm" class="form-container" (ngSubmit)="onSave()">
-    
+
+    <!-- Task Title -->
     <div class="input-section">
       <label class="section-label">Task Title</label>
-      <input 
-        type="text" 
-        formControlName="title" 
-        placeholder="What needs to be done?" 
+      <input
+        type="text"
+        formControlName="title"
+        placeholder="What needs to be done?"
         class="title-input"
         [class.invalid]="taskForm.controls.title.touched && taskForm.controls.title.invalid">
-      
       @if (taskForm.controls.title.touched && taskForm.controls.title.errors?.['required']) {
         <small class="error-text">Title is required</small>
       }
     </div>
 
+    <!-- Description -->
     <div class="input-section">
       <label class="section-label">Description</label>
-      <textarea 
-        formControlName="description" 
-        placeholder="Add more details..." 
-        rows="4" 
+      <textarea
+        formControlName="description"
+        placeholder="Add more details..."
+        rows="5"
         class="desc-input"></textarea>
     </div>
 
+    <!-- Deadline -->
+    <div class="input-section">
+      <label class="section-label">Deadline</label>
+
+      <!-- Trigger row -->
+      <button type="button" class="picker-trigger" [class.has-value]="taskForm.controls.deadline.value" (click)="openDatePicker()">
+        <ion-icon name="calendar-outline" class="icon-primary"></ion-icon>
+        <span class="placeholder-text">
+          {{ taskForm.controls.deadline.value
+              ? (taskForm.controls.deadline.value | date:'EEE, MMM d · h:mm a')
+              : 'Set a due date' }}
+        </span>
+        <ion-icon name="chevron-forward-outline" class="icon-chevron"></ion-icon>
+      </button>
+
+      <!-- Custom Date/Time Picker Modal -->
+      @if (showDatePicker) {
+        <div class="picker-backdrop" (click)="closeDatePicker()"></div>
+        <div class="picker-sheet">
+
+          <!-- Sheet Header -->
+          <div class="picker-sheet-header">
+            <button type="button" class="sheet-cancel" (click)="closeDatePicker()">Cancel</button>
+            <span class="sheet-title">Set Deadline</span>
+            <button type="button" class="sheet-done" (click)="confirmDate()">Done</button>
+          </div>
+
+          <!-- Month/Year navigation -->
+          <div class="cal-nav">
+            <button type="button" class="cal-nav-btn" (click)="changePickerMonth(-1)">
+              <ion-icon name="chevron-back-outline"></ion-icon>
+            </button>
+            <span class="cal-month-label">{{ pickerViewDate | date:'MMMM yyyy' }}</span>
+            <button type="button" class="cal-nav-btn" (click)="changePickerMonth(1)">
+              <ion-icon name="chevron-forward-outline"></ion-icon>
+            </button>
+          </div>
+
+          <!-- Day-of-week headers -->
+          <div class="cal-grid">
+            @for (d of ['S','M','T','W','T','F','S']; track $index) {
+              <div class="cal-dow">{{ d }}</div>
+            }
+            <!-- Date cells -->
+            @for (cell of pickerDays; track $index) {
+              @if (cell) {
+                <button
+                  type="button"
+                  class="cal-cell"
+                  [class.today]="isPickerToday(cell)"
+                  [class.selected]="isPickerSelected(cell)"
+                  [class.past]="isPickerPast(cell)"
+                  (click)="selectPickerDate(cell)">
+                  {{ cell.getDate() }}
+                </button>
+              } @else {
+                <div class="cal-cell empty"></div>
+              }
+            }
+          </div>
+
+          <!-- Time Picker -->
+          <div class="time-section">
+            <div class="time-label">
+              <ion-icon name="time-outline"></ion-icon>
+              <span>Time</span>
+            </div>
+            <div class="time-controls">
+              <!-- Hour -->
+              <div class="time-col">
+                <button type="button" class="time-arrow" (click)="adjustHour(1)">
+                  <ion-icon name="chevron-up-outline"></ion-icon>
+                </button>
+                <span class="time-val">{{ pickerHour | number:'2.0' }}</span>
+                <button type="button" class="time-arrow" (click)="adjustHour(-1)">
+                  <ion-icon name="chevron-down-outline"></ion-icon>
+                </button>
+              </div>
+              <span class="time-sep">:</span>
+              <!-- Minute -->
+              <div class="time-col">
+                <button type="button" class="time-arrow" (click)="adjustMinute(1)">
+                  <ion-icon name="chevron-up-outline"></ion-icon>
+                </button>
+                <span class="time-val">{{ pickerMinute | number:'2.0' }}</span>
+                <button type="button" class="time-arrow" (click)="adjustMinute(-1)">
+                  <ion-icon name="chevron-down-outline"></ion-icon>
+                </button>
+              </div>
+              <!-- AM/PM -->
+              <div class="ampm-toggle">
+                <button type="button" class="ampm-btn" [class.active]="pickerAmPm === 'AM'" (click)="pickerAmPm = 'AM'">AM</button>
+                <button type="button" class="ampm-btn" [class.active]="pickerAmPm === 'PM'" (click)="pickerAmPm = 'PM'">PM</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      }
+    </div>
+
+    <!-- Priority -->
     <div class="input-section">
       <label class="section-label">Priority</label>
       <div class="priority-toggle">
         @for (p of priorities; track p) {
-          <button 
+          <button
             type="button"
             class="p-btn"
             [class.active]="taskForm.controls.priority.value === p"
@@ -47,6 +150,10 @@
       </div>
     </div>
 
+    <!-- Divider -->
+    <div class="divider"></div>
+
+    <!-- Add Category -->
     <div class="extra-option">
       <div class="option-left">
         <div class="icon-circle">
@@ -54,7 +161,7 @@
         </div>
         <span>Add Category</span>
       </div>
-      <ion-icon name="add-outline" class="icon-muted"></ion-icon>
+      <ion-icon name="add-outline" class="icon-add"></ion-icon>
     </div>
 
   </form>
@@ -62,10 +169,10 @@
 
 <ion-footer class="ion-no-border">
   <div class="footer-padding">
-    <button 
+    <button
       type="submit"
       form="taskForm"
-      class="save-btn" 
+      class="save-btn"
       [disabled]="taskForm.invalid">
       Save Task
     </button>

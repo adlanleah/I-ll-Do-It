@@ -1,43 +1,183 @@
 import { AuthService } from './../Services/auth';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { IonContent, IonIcon, IonFab, IonFabButton, IonAvatar, IonButton } from "@ionic/angular/standalone";
+import { FormsModule } from '@angular/forms';
+import { IonContent, IonIcon, IonFab, IonFabButton, IonAvatar } from "@ionic/angular/standalone";
 import { addIcons } from 'ionicons';
-import { add, analyticsOutline, calendarClearOutline, calendarOutline, checkmarkSharp, grid, listOutline, personOutline, searchOutline, settingsOutline, timeOutline, timerOutline, trashOutline } from 'ionicons/icons';
+import {
+  add, analyticsOutline, calendarClearOutline, calendarOutline,
+  checkmarkCircleOutline, checkmarkSharp, closeOutline, grid,
+  personOutline, searchOutline, settingsOutline, timeOutline, trashOutline, addOutline
+} from 'ionicons/icons';
 
-interface Task {
-  id: number;
-  title: string;
-  time: string;
-  category: string;
-  priority?: 'High' | 'Medium' | 'Low';
-  completed: boolean;
-  icon: string;
-}
+type TabKey = 'today' | 'upcoming' | 'completed' | 'all';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  imports: [IonContent, IonFab, IonFabButton, IonIcon, RouterLink, IonAvatar],
+  imports: [IonContent, IonFab, IonFabButton, IonIcon, RouterLink, IonAvatar, FormsModule],
 })
-export class DashboardComponent  implements OnInit {
+export class DashboardComponent implements OnInit {
   public authService = inject(AuthService);
-   userProfileImage: string = "assets/icon/Todo-Logo.png";
+  userProfileImage = 'assets/icon/Todo-Logo.png';
+
+  searchQuery = '';
+
+  onSearch() {}
+  clearSearch() { this.searchQuery = ''; }
+
+  activeTab = signal<TabKey>('today');
+
+  setTab(key: TabKey) {
+    this.activeTab.set(key);
+    this.searchQuery = '';
+  }
+
+  //Tabb key functions
+  tabs = [
+    {
+      key: 'today' as TabKey,
+      label: 'Today',
+      count: computed(() => this.todayTasks().length)
+    },
+    {
+      key: 'upcoming' as TabKey,
+      label: 'Upcoming',
+      count: computed(() => this.upcomingTasks().length)
+    },
+    {
+      key: 'completed' as TabKey,
+      label: 'Completed',
+      count: computed(() => this.completedTasks().length)
+    },
+    {
+      key: 'all' as TabKey,
+      label: 'All',
+      count: computed(() => this.authService.tasks().length)
+    },
+  ];
+
+  private todayStr = new Date().toDateString();
+
+  todayTasks = computed(() =>
+    this.authService.tasks().filter(t => {
+      if (t.completed) return false;
+      if (!t.deadline) return true; // tasks with no deadline show in today
+      return new Date(t.deadline).toDateString() === this.todayStr;
+    })
+  );
+
+  upcomingTasks = computed(() => {
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    return this.authService.tasks().filter(t => {
+      if (t.completed) return false;
+      if (!t.deadline) return false;
+      return new Date(t.deadline) > today;
+    });
+  });
+
+  completedTasks = computed(() =>
+    this.authService.tasks().filter(t => t.completed)
+  );
+
+  //filter
+  filteredTasks = computed(() => {
+    const tab = this.activeTab();
+    const q   = this.searchQuery.toLowerCase().trim();
+
+    let base: any[];
+    switch (tab) {
+      case 'today':     base = this.todayTasks();     break;
+      case 'upcoming':  base = this.upcomingTasks();  break;
+      case 'completed': base = this.completedTasks(); break;
+      default:          base = this.authService.tasks();
+    }
+
+    if (!q) return base;
+    return base.filter(t =>
+      t.title?.toLowerCase().includes(q) ||
+      t.description?.toLowerCase().includes(q) ||
+      t.category?.toLowerCase().includes(q) ||
+      t.priority?.toLowerCase().includes(q)
+    );
+  });
+
+  // sectioning the tabs
+  sectionTitle = computed(() => {
+    const q = this.searchQuery.trim();
+    if (q) return `Results for "${q}"`;
+    switch (this.activeTab()) {
+      case 'today':     return "Today's Priority";
+      case 'upcoming':  return 'Upcoming Tasks';
+      case 'completed': return 'Completed Tasks';
+      default:          return 'All Tasks';
+    }
+  });
+
+  // header
+  taskCountLabel = computed(() => {
+    const tab = this.activeTab();
+    const count = this.filteredTasks().length;
+    if (tab === 'today')     return `${count} task${count !== 1 ? 's' : ''} for today`;
+    if (tab === 'upcoming')  return `${count} upcoming task${count !== 1 ? 's' : ''}`;
+    if (tab === 'completed') return `${count} completed`;
+    return `${count} total task${count !== 1 ? 's' : ''}`;
+  });
+
+  emptyIcon = computed(() => {
+    if (this.searchQuery) return 'search-outline';
+    switch (this.activeTab()) {
+      case 'completed': return 'checkmark-circle-outline';
+      case 'upcoming':  return 'calendar-outline';
+      default:          return 'clipboard-outline';
+    }
+  });
+
+  emptyMessage = computed(() => {
+    if (this.searchQuery) return `No tasks match "${this.searchQuery}"`;
+    switch (this.activeTab()) {
+      case 'today':     return "No tasks for today. Tap + to add one!";
+      case 'upcoming':  return "Nothing upcoming. You're all caught up!";
+      case 'completed': return "No completed tasks yet.";
+      default:          return "No tasks yet. Tap + to get started!";
+    }
+  });
+
+  // deadline display
+  formatDeadline(deadline: string | null | undefined): string {
+    if (!deadline) return 'All Day';
+    const d = new Date(deadline);
+    const todayStr = new Date().toDateString();
+    const tomorrowStr = new Date(Date.now() + 86400000).toDateString();
+
+    const timeStr = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+
+    if (d.toDateString() === todayStr)     return `Today, ${timeStr}`;
+    if (d.toDateString() === tomorrowStr)  return `Tomorrow, ${timeStr}`;
+
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + `, ${timeStr}`;
+  }
 
   async toggleTask(task: any) {
     await this.authService.updateTaskStatus(task.id, !task.completed);
   }
 
-  constructor() { 
-    addIcons({add, trashOutline, grid ,calendarClearOutline, analyticsOutline, personOutline, settingsOutline, searchOutline, checkmarkSharp,timeOutline})
+  async deleteTask(id: number) {
+    await this.authService.deleteTask(id.toString());
+  }
+
+  constructor() {
+    addIcons({
+      add, addOutline, trashOutline, grid, calendarClearOutline, calendarOutline,
+      analyticsOutline, personOutline, settingsOutline, searchOutline,
+      checkmarkSharp, checkmarkCircleOutline, timeOutline, closeOutline
+    });
   }
 
   ngOnInit() {
-    const savedImage = localStorage.getItem('profileImage');
-  if (savedImage) {
-    this.userProfileImage = savedImage;
+    const saved = localStorage.getItem('profileImage');
+    if (saved) this.userProfileImage = saved;
   }
-  }
-
 }

@@ -1,0 +1,92 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="calendar-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button routerLink="/dashboard" icon="arrow-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Calendar</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" class="search-btn">
+        <ion-icon name="search-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="calendar-content">
+
+  <!-- Month Navigation -->
+  <div class="calendar-nav">
+    <ion-button fill="clear" class="nav-btn" (click)="changeMonth(-1)">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </ion-button>
+    <h2 class="month-title">{{ viewDate() | date:'MMMM yyyy' }}</h2>
+    <ion-button fill="clear" class="nav-btn" (click)="changeMonth(1)">
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </ion-button>
+  </div>
+
+  <!-- Days of Week Labels -->
+  <div class="days-grid">
+    @for (day of ['S','M','T','W','T','F','S']; track $index) {
+      <div class="day-label">{{ day }}</div>
+    }
+
+    <!-- Date Cells -->
+    @for (date of calendarDays(); track $index) {
+      @if (date) {
+        <button
+          class="date-cell"
+          [class.selected]="selectedDate().toDateString() === date.toDateString()"
+          [class.today]="isToday(date)"
+          (click)="selectDay(date)">
+          <span class="date-number">{{ date.getDate() }}</span>
+          @if (hasTasks(date)) { <div class="task-dot"></div> }
+        </button>
+      } @else {
+        <div class="date-cell empty"></div>
+      }
+    }
+  </div>
+
+  <!-- Selected Day Task List -->
+  <div class="task-list-section">
+    <div class="task-list-header">
+      <h3 class="selected-date-label">{{ selectedDate() | date:'EEEE, MMM d' }}</h3>
+      @if (tasksForSelectedDate().length > 0) {
+        <span class="task-count">{{ tasksForSelectedDate().length }} Task{{ tasksForSelectedDate().length > 1 ? 's' : '' }}</span>
+      }
+    </div>
+
+    @for (task of tasksForSelectedDate(); track task.id) {
+      <div class="task-item">
+        <div class="task-icon-wrap">
+          <ion-icon [name]="task.icon || 'calendar-outline'"></ion-icon>
+        </div>
+        <div class="task-details">
+          <h4 class="task-name">{{ task.title }}</h4>
+          <p class="task-category">{{ task.category || task.priority || 'General' }}</p>
+        </div>
+        <div class="task-time-block">
+          <span class="task-time">{{ task.time || 'All Day' }}</span>
+          @if (task.duration) {
+            <span class="task-duration">{{ task.duration }}</span>
+          }
+        </div>
+      </div>
+    }
+
+    @if (tasksForSelectedDate().length === 0) {
+      <div class="empty-state">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <p>No tasks for this day</p>
+      </div>
+    }
+  </div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="custom-fab">
+    <ion-fab-button (click)="goToAddTask()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

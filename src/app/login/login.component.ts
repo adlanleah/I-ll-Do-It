@@ -1,24 +1,28 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonContent, IonTitle, IonButton, IonIcon, IonHeader, IonToolbar, IonButtons, IonLabel, IonItem, IonInput, IonSpinner } from "@ionic/angular/standalone";
+import { IonContent, IonIcon, IonSpinner } from "@ionic/angular/standalone";
 import { AuthService } from '../Services/auth';
+import { RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { alertCircleOutline, checkboxOutline, closeOutline, eyeOffOutline, eyeOutline, logoApple } from 'ionicons/icons';
+import {
+  alertCircleOutline, checkmarkCircleOutline, closeOutline,
+  eyeOffOutline, eyeOutline, logoApple
+} from 'ionicons/icons';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  imports: [ReactiveFormsModule, IonContent, IonIcon, IonSpinner],
+  imports: [ReactiveFormsModule, IonContent, IonIcon, IonSpinner, RouterLink],
 })
-export class LoginComponent  implements OnInit {
+export class LoginComponent implements OnInit {
   authService = inject(AuthService);
-  showPassword = false
+  showPassword = false;
+
   loginForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
+    email:    new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', Validators.required)
   });
-  
 
   async onLogin() {
     if (this.loginForm.valid) {
@@ -30,12 +34,13 @@ export class LoginComponent  implements OnInit {
   togglePassword() {
     this.showPassword = !this.showPassword;
   }
-  
 
-  constructor() { 
-    addIcons({closeOutline, checkboxOutline, alertCircleOutline, eyeOffOutline, eyeOutline, logoApple})
+  constructor() {
+    addIcons({
+      closeOutline, checkmarkCircleOutline,
+      alertCircleOutline, eyeOutline, eyeOffOutline, logoApple
+    });
   }
 
   ngOnInit() {}
-
 }

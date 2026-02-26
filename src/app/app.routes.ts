@@ -29,6 +29,14 @@ export const routes: Routes = [
     loadComponent: () => import('./task/task.component').then(m => m.TaskComponent),
   },
   {
+    path: 'calendar',
+    loadComponent: () => import('./calendar/calendar.component').then(m => m.CalendarComponent),
+  },
+  {
+    path: 'stats',
+    loadComponent: () => import('./stats/stats.component').then(m => m.StatsComponent),
+  },
+  {
     path: 'settings',
     loadComponent: () => import('./settings/settings.component').then(m => m.SettingsComponent),
   },

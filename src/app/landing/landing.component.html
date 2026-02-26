@@ -1,6 +1,7 @@
 <ion-content [fullscreen]="true" class="ion-no-padding">
   <div class="page-wrap">
 
+    <!-- App Bar -->
     <div class="app-bar">
       <div class="icon-circle">
         <ion-icon name="close-outline"></ion-icon>
@@ -8,6 +9,7 @@
       <button class="skip-btn" routerLink="/signup">Skip</button>
     </div>
 
+    <!-- Hero Illustration -->
     <div class="illustration-area">
       <div class="hero-card">
         <div class="glow-blob"></div>
@@ -30,25 +32,29 @@
       </div>
     </div>
 
+    <!-- Content -->
     <div class="content-area">
       <h1 class="title">Organize your life</h1>
       <p class="subtitle">
-        The simplest way to track your daily tasks, set reminders, and hit your productivity goals every single day.
+        The simplest way to track your daily tasks, set reminders, and hit your
+        productivity goals every single day.
       </p>
 
+      <!-- Pagination Dots -->
       <div class="dots">
         <span class="dot active"></span>
         <span class="dot"></span>
         <span class="dot"></span>
       </div>
 
+      <!-- CTA Buttons -->
       <div class="btn-group">
         <button class="btn-primary" routerLink="/signup">
-        <span>Get Started</span>
+          <span>Get Started</span>
           <ion-icon name="arrow-forward-outline"></ion-icon>
         </button>
-        <button class="btn-ghost">
-          Already have an account? <a routerLink="/login">Log in</a>
+        <button class="btn-ghost" routerLink="/login">
+          Already have an account? <span class="login-link">Log In</span>
         </button>
       </div>
     </div>

@@ -1,133 +1,362 @@
 :host {
   --primary: #13ecc8;
-  --bg-dark: #10221f;
-  --bg-input: rgba(30, 41, 59, 0.5);
+  --bg-dark: #0d1f1c;
   --text-main: #f1f5f9;
   --text-muted: #94a3b8;
+  /* ↓ Match signup exactly — teal-tinted translucent bg */
+  --input-bg: rgba(19, 236, 200, 0.05);
+  --input-border: rgba(19, 236, 200, 0.12);
 }
 
+ion-content {
+  --background: var(--bg-dark);
+}
+
+/* ─── Container ───────────────────────────────────── */
 .login-container {
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  padding: 32px 24px;
+  padding: 0 24px 48px;
   background-color: var(--bg-dark);
   font-family: 'Inter', sans-serif;
   position: relative;
   overflow: hidden;
 }
 
-/* Header */
-.top-bar { margin-bottom: 32px; }
-.icon-btn {
-  background: transparent;
-  font-size: 28px;
-  color: var(--text-main);
+/* ─── Glow Orbs — same as signup ─────────────────── */
+.glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
 }
 
+.glow-top {
+  top: -80px;
+  right: -80px;
+  width: 280px;
+  height: 280px;
+  background: rgba(19, 236, 200, 0.12);
+}
+
+.glow-bottom {
+  bottom: 100px;
+  left: -60px;
+  width: 200px;
+  height: 200px;
+  background: rgba(19, 236, 200, 0.06);
+}
+
+/* ─── Top Bar ─────────────────────────────────────── */
+.top-bar {
+  padding: 52px 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s;
+  border-radius: 50%;
+
+  &:active { background: rgba(19, 236, 200, 0.1); }
+}
+
+/* ─── Hero ────────────────────────────────────────── */
 .header-section {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 40px;
+  position: relative;
+  z-index: 1;
 }
 
 .logo-box {
-  width: 64px;
-  height: 64px;
-  background: rgba(19, 236, 200, 0.2);
-  border-radius: 16px;
+  width: 70px;
+  height: 70px;
+  background: rgba(19, 236, 200, 0.15);
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 24px;
+  border: 1px solid rgba(19, 236, 200, 0.2);
 }
 
-.logo-icon { font-size: 36px; color: var(--primary); }
-.title { font-size: 30px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
-.subtitle { color: var(--text-muted); font-size: 16px; }
+.logo-icon {
+  font-size: 38px;
+  color: var(--primary);
+}
 
-/* Form Fields */
-.form-group { display: flex; flex-direction: column; gap: 20px; width: 100%; }
-.input-wrapper { display: flex; flex-direction: column; gap: 8px; }
-.label-row { display: flex; justify-content: space-between; align-items: center; }
-.input-label { font-size: 14px; font-weight: 600; color: #cbd5e1; margin-left: 4px; }
+.title {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0 0 8px;
+  letter-spacing: -0.5px;
+}
 
+.subtitle {
+  color: var(--text-muted);
+  font-size: 15px;
+  margin: 0;
+}
+
+/* ─── Error Banner ────────────────────────────────── */
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  color: #f87171;
+  font-size: 13px;
+  font-weight: 500;
+  position: relative;
+  z-index: 1;
+
+  ion-icon { font-size: 18px; flex-shrink: 0; }
+}
+
+/* ─── Form ────────────────────────────────────────── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ─── Labels — match signup uppercase style ───────── */
+.input-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  padding-left: 2px;
+}
+
+/* ─── Field Box ───────────────────────────────────── */
+.field-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* ─── Inputs — identical to signup ───────────────── */
 .custom-input {
   width: 100%;
   height: 56px;
-  background: var(--bg-input);
-  border: 1px solid transparent;
-  border-radius: 12px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 14px;
   padding: 0 16px;
-  color: white;
+  color: var(--text-main);
   font-size: 16px;
-  transition: all 0.2s;
+  font-family: inherit;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: rgba(100, 116, 139, 0.6);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(19, 236, 200, 0.07);
+    box-shadow: 0 0 0 3px rgba(19, 236, 200, 0.1);
+  }
+
+  &.invalid {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.05);
+
+    &:focus { box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1); }
+  }
 }
 
-.custom-input:focus {
-  border-color: var(--primary);
-  outline: none;
+/* password input needs room for eye toggle */
+.password-box .custom-input {
+  padding-right: 48px;
 }
 
-.custom-input.invalid { border-color: #ef4444; }
-
-.password-container { position: relative; display: flex; align-items: center; }
+/* ─── Eye Toggle — same as signup suffix-btn ──────── */
 .visibility-toggle {
   position: absolute;
-  right: 16px;
+  right: 14px;
   background: transparent;
-  color: var(--text-muted);
+  border: none;
+  color: #64748b;
   font-size: 20px;
-}
-
-/* Buttons */
-.btn-primary {
-  width: 100%;
-  height: 56px;
-  background: var(--primary);
-  color: var(--bg-dark);
-  font-weight: 700;
-  font-size: 18px;
-  border-radius: 12px;
-  margin-top: 8px;
-  box-shadow: 0 10px 15px -3px rgba(19, 236, 200, 0.2);
-}
-
-/* Social & Divider */
-.divider { display: flex; align-items: center; gap: 16px; margin: 40px 0; }
-.line { flex: 1; height: 1px; background: #1e293b; }
-.divider-text { font-size: 10px; font-weight: 800; color: #64748b; letter-spacing: 1px; }
-
-.social-group { display: flex; flex-direction: column; gap: 12px; }
-.btn-social {
-  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+  z-index: 2;
+
+  &:hover { color: var(--text-main); }
+}
+
+/* ─── Primary Button — same as signup ────────────── */
+.btn-primary {
+  width: 100%;
+  height: 58px;
+  background: var(--primary);
+  color: #0d1f1c;
+  font-weight: 800;
+  font-size: 17px;
+  border-radius: 16px;
+  border: none;
+  margin-top: 8px;
+  cursor: pointer;
+  letter-spacing: 0.2px;
+  box-shadow: 0 8px 24px rgba(19, 236, 200, 0.3);
+  transition: transform 0.15s, box-shadow 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0 4px 12px rgba(19, 236, 200, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    filter: grayscale(0.3);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+}
+
+/* ─── Forgot Password ─────────────────────────────── */
+.link-btn {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+
+  &.bold { font-weight: 700; font-size: 14px; }
+}
+
+/* ─── Divider — match signup teal line ────────────── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 28px 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.line {
+  flex: 1;
+  height: 1px;
+  background: rgba(19, 236, 200, 0.1);
+}
+
+.divider-text {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 1.2px;
+  white-space: nowrap;
+}
+
+/* ─── Social Buttons — match signup social-btn ────── */
+.social-group {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
-  border-radius: 12px;
-  font-weight: 500;
-  font-size: 16px;
+  position: relative;
+  z-index: 1;
 }
 
-.google { background: white; color: #1e293b; }
-.apple { background: black; color: white; border: 1px solid #334155; }
-.social-icon { width: 20px; }
+.btn-social {
+  width: 100%;
+  height: 54px;
+  border: 1px solid rgba(19, 236, 200, 0.12);
+  border-radius: 14px;
+  background: rgba(19, 236, 200, 0.03);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
 
-.footer { margin-top: auto; padding-top: 32px; text-align: center; }
-.link-btn { background: transparent; color: var(--primary); font-size: 14px; }
-.link-btn.bold { font-weight: 700; }
+  &:hover {
+    border-color: rgba(19, 236, 200, 0.25);
+    background: rgba(19, 236, 200, 0.07);
+  }
 
-/* Background Decoration */
-.glow {
-  position: fixed;
-  width: 250px;
-  height: 250px;
-  background: rgba(19, 236, 200, 0.05);
-  border-radius: 50%;
-  filter: blur(60px);
-  z-index: -1;
+  &:active { transform: scale(0.98); }
+
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .social-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+
+  ion-icon { font-size: 20px; }
 }
-.glow-top { top: -100px; right: -100px; }
-.glow-bottom { bottom: -100px; left: -100px; }
+
+/* ─── Footer ──────────────────────────────────────── */
+.footer {
+  margin-top: auto;
+  padding-top: 40px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+
+  p {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+  }
+}
