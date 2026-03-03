@@ -10,7 +10,8 @@ import {calendarClearOutline, calendarOutline, cameraOutline, chevronBackOutline
 } from 'ionicons/icons';
 import { RouterLink } from '@angular/router';
 import { Firestore } from '@angular/fire/firestore';
-import { ref, Storage, uploadBytesResumable} from '@angular/fire/storage'
+import { deleteObject, ref, Storage, uploadBytesResumable} from '@angular/fire/storage'
+import { Upload } from '../Services/upload';
 
 @Component({
   selector: 'app-settings',
@@ -20,12 +21,12 @@ import { ref, Storage, uploadBytesResumable} from '@angular/fire/storage'
 })
 export class SettingsComponent implements OnInit {
   authService = inject(AuthService);
+  demoUpload = inject(Upload)
   private db = inject(Firestore)
   private storage = inject(Storage);
   isDarkMode  = signal(true);
   appVersion  = '2.4.0';
-  userProfileImage = 'assets/icon/Todo-Logo.png';
-
+  userProfileImage:any;
 
   async pickImage() {
     const image = await Camera.getPhoto({
@@ -38,6 +39,14 @@ export class SettingsComponent implements OnInit {
       localStorage.setItem('profileImage', image.webPath);
     }
   }
+
+   async uploadvatar(event:any, dp:string){
+    if (dp) {
+      const storageRef = ref(this.storage, dp);
+      await deleteObject(storageRef);
+    }
+    await this.demoUpload.images(event);
+   }
 
   toggleTheme() {
     this.isDarkMode.update(v => !v);
@@ -61,5 +70,6 @@ export class SettingsComponent implements OnInit {
   ngOnInit() {
     const saved = localStorage.getItem('profileImage');
     if (saved) this.userProfileImage = saved;
+    // localStorage.clear()
   }
 }

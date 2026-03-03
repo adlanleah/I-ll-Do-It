@@ -12,10 +12,10 @@
   <div class="scroll-content">
 
     <!-- Profile -->
-    <section class="profile-section" (click)="pickImage()">
+    <section class="profile-section" (click)="file.click()">
       <div class="avatar-wrap">
         <ion-avatar class="profile-avatar">
-          <img [src]="userProfileImage" alt="Profile" />
+          <img [src]="userProfileImage  ?  userProfileImage: 'assets/icon/Todo-Logo.png'" [alt]="userProfileImage" />
         </ion-avatar>
         <div class="avatar-edit-badge">
           <ion-icon name="camera-outline"></ion-icon>
@@ -24,6 +24,7 @@
       <h2 class="profile-name">{{ authService.currentUser()?.displayName || 'Your Name' }}</h2>
       <p class="profile-email">{{ authService.currentUser()?.email || 'Tap avatar to change photo' }}</p>
     </section>
+    <input type="file" #file [style]="{display: 'none'}" accept="image/*" (change)="uploadvatar($event, userProfileImage)">
 
     <!-- ACCOUNT -->
     <section class="settings-group">
