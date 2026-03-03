@@ -1,6 +1,6 @@
 import { inject, Injectable, signal, effect, OnDestroy } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, onAuthStateChanged, User } from '@angular/fire/auth';
-import { addDoc, collection, deleteDoc, doc, Firestore, serverTimestamp, setDoc, updateDoc, onSnapshot, query, orderBy, Unsubscribe } from '@angular/fire/firestore';
+import { addDoc, collection, deleteDoc, doc, Firestore, serverTimestamp, setDoc, updateDoc, onSnapshot, query, orderBy, Unsubscribe, where } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -46,6 +46,8 @@ export class AuthService implements OnDestroy{
 
   const q = query(
     collection(this.db, `users/${uid}/tasks`),
+    // collection(this.db, 'tasks'),
+    // where('userId', '==', uid),
     orderBy('createdAt', 'desc')
   );
 
@@ -151,7 +153,8 @@ export class AuthService implements OnDestroy{
     return addDoc(taskCol, { 
       ...task, 
       completed: false, 
-      createdAt: serverTimestamp() 
+      createdAt: serverTimestamp(),
+      userId: uid
     });
   }
 

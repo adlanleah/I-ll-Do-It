@@ -9,6 +9,8 @@ import {calendarClearOutline, calendarOutline, cameraOutline, chevronBackOutline
   settingsOutline, timerOutline
 } from 'ionicons/icons';
 import { RouterLink } from '@angular/router';
+import { Firestore } from '@angular/fire/firestore';
+import { ref, Storage, uploadBytesResumable} from '@angular/fire/storage'
 
 @Component({
   selector: 'app-settings',
@@ -18,15 +20,19 @@ import { RouterLink } from '@angular/router';
 })
 export class SettingsComponent implements OnInit {
   authService = inject(AuthService);
+  private db = inject(Firestore)
+  private storage = inject(Storage);
   isDarkMode  = signal(true);
   appVersion  = '2.4.0';
   userProfileImage = 'assets/icon/Todo-Logo.png';
+
 
   async pickImage() {
     const image = await Camera.getPhoto({
       resultType: CameraResultType.Uri,
       quality: 60,
     });
+
     if (image.webPath) {
       this.userProfileImage = image.webPath;
       localStorage.setItem('profileImage', image.webPath);

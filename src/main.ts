@@ -7,6 +7,7 @@ import { AppComponent } from './app/app.component';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { getStorage, provideStorage} from '@angular/fire/storage'
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -22,5 +23,6 @@ bootstrapApplication(AppComponent, {
       measurementId: "G-SXRPYM21SP" })), 
       provideAuth(() => getAuth()), 
       provideFirestore(() => getFirestore()),
+      provideStorage(() => getStorage())
   ],
 });
