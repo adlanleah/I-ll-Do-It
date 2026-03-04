@@ -15,7 +15,6 @@ ion-footer {
   background: var(--bg-dark);
 }
 
-/* Prevent Ionic safe-area from pushing content under header */
 ion-content {
   --padding-top: 0;
 }
@@ -37,10 +36,9 @@ ion-content {
   }
 }
 
-/* Ensure Ionic toolbar inside ion-header gets correct bg */
 ion-header {
   background: var(--bg-dark);
-  &::after { display: none; } /* remove Ionic's default bottom border shadow */
+  &::after { display: none; }
 }
 
 .cancel-btn {
@@ -99,9 +97,7 @@ ion-header {
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 
-  &::placeholder {
-    color: rgba(100, 116, 139, 0.6);
-  }
+  &::placeholder { color: rgba(100, 116, 139, 0.6); }
 
   &:focus {
     border-color: var(--primary);
@@ -139,13 +135,8 @@ ion-header {
   outline: none;
   transition: border-color 0.2s;
 
-  &::placeholder {
-    color: rgba(100, 116, 139, 0.55);
-  }
-
-  &:focus {
-    border-color: rgba(19, 236, 200, 0.3);
-  }
+  &::placeholder { color: rgba(100, 116, 139, 0.55); }
+  &:focus { border-color: rgba(19, 236, 200, 0.3); }
 }
 
 /* ─── Deadline Picker ─────────────────────────────── */
@@ -162,13 +153,9 @@ ion-header {
   position: relative;
 
   &:hover,
-  &:focus-within {
-    border-color: rgba(19, 236, 200, 0.3);
-  }
+  &:focus-within { border-color: rgba(19, 236, 200, 0.3); }
 
-  &.has-value .placeholder-text {
-    color: var(--text-main);
-  }
+  &.has-value .placeholder-text { color: var(--text-main); }
 }
 
 .icon-primary {
@@ -189,7 +176,6 @@ ion-header {
   flex-shrink: 0;
 }
 
-/* Hide the native date input visually but keep it clickable */
 .hidden-date-input {
   position: absolute;
   inset: 0;
@@ -223,9 +209,7 @@ ion-header {
   cursor: pointer;
   transition: all 0.2s;
 
-  &:hover:not(.active) {
-    color: var(--text-main);
-  }
+  &:hover:not(.active) { color: var(--text-main); }
 
   &.active {
     background: var(--primary);
@@ -327,15 +311,34 @@ ion-footer {
 
 .picker-sheet {
   position: fixed;
-  bottom: 0;
+  bottom: 80px;        // ✅ push sheet above the ion-footer height
   left: 0;
   right: 0;
   z-index: 201;
   background: #0f2420;
   border-radius: 24px 24px 0 0;
   border-top: 1px solid rgba(19, 236, 200, 0.15);
-  padding: 0 0 40px;
+  padding: 0;
+  max-height: calc(90vh - 80px);   // ✅ account for footer in max height
+  display: flex;
+  flex-direction: column;
   animation: slideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.picker-sheet-inner {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 24px;
+  flex: 1;
+}
+
+.picker-backdrop {
+  position: fixed;
+  inset: 0;
+  bottom: 0;           // ✅ covers full screen including footer area
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 200;
+  backdrop-filter: blur(2px);
 }
 
 @keyframes slideUp {
@@ -377,6 +380,7 @@ ion-footer {
   padding: 0;
 }
 
+/* ─── Calendar Nav ────────────────────────────────── */
 .cal-nav {
   display: flex;
   justify-content: space-between;
@@ -405,6 +409,7 @@ ion-footer {
   color: var(--text-main);
 }
 
+/* ─── Calendar Grid ───────────────────────────────── */
 .cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -438,12 +443,13 @@ ion-footer {
   transition: background 0.15s, color 0.15s;
 
   &.empty { pointer-events: none; }
-  &.past { color: rgba(100, 116, 139, 0.4); cursor: not-allowed; }
+  &.past  { color: rgba(100, 116, 139, 0.4); cursor: not-allowed; }
   &.today:not(.selected) { color: var(--primary); font-weight: 700; }
   &:hover:not(.selected):not(.past):not(.empty) { background: rgba(19, 236, 200, 0.1); }
   &.selected { background: var(--primary); color: var(--bg-dark); font-weight: 800; }
 }
 
+/* ─── Time Section ────────────────────────────────── */
 .time-section {
   margin: 16px 20px 0;
   padding: 16px;
@@ -493,7 +499,8 @@ ion-footer {
   font-size: 18px;
   cursor: pointer;
   transition: background 0.15s;
-  &:hover { background: rgba(19, 236, 200, 0.16); }
+
+  &:hover  { background: rgba(19, 236, 200, 0.16); }
   &:active { transform: scale(0.92); }
 }
 
@@ -514,6 +521,7 @@ ion-footer {
   margin-bottom: 4px;
 }
 
+/* ─── AM / PM Toggle ──────────────────────────────── */
 .ampm-toggle {
   display: flex;
   flex-direction: column;
@@ -522,24 +530,28 @@ ion-footer {
 }
 
 .ampm-btn {
-  padding: 8px 16px;
+  padding: 10px 20px;
   border-radius: 10px;
-  border: 1px solid rgba(19, 236, 200, 0.15);
-  background: transparent;
-  color: var(--text-muted);
-  font-size: 13px;
+  border: 1.5px solid rgba(19, 236, 200, 0.4);  // ✅ clearly visible border
+  background: rgba(19, 236, 200, 0.08);          // ✅ subtle teal tint
+  color: #f1f5f9;                                // ✅ bright white text
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s;
+  letter-spacing: 0.5px;
+  min-width: 56px;
+  text-align: center;
 
   &.active {
-    background: var(--primary);
-    color: var(--bg-dark);
-    border-color: var(--primary);
+    background: #13ecc8;
+    color: #0d1f1c;
+    border-color: #13ecc8;
+    box-shadow: 0 4px 12px rgba(19, 236, 200, 0.35);
   }
 
   &:hover:not(.active) {
-    color: var(--text-main);
-    border-color: rgba(19, 236, 200, 0.3);
+    background: rgba(19, 236, 200, 0.15);
+    border-color: rgba(19, 236, 200, 0.6);
   }
 }

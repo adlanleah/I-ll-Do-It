@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { AuthService } from './auth';
 import { doc, Firestore, updateDoc } from '@angular/fire/firestore';
-import { getDownloadURL, ref, Storage, uploadBytesResumable} from '@angular/fire/storage'
+import { getDownloadURL, ref, Storage, uploadBytesResumable } from '@angular/fire/storage';
 import { FirebaseError } from '@angular/fire/app';
 
 @Injectable({
@@ -9,19 +9,25 @@ import { FirebaseError } from '@angular/fire/app';
 })
 export class Upload {
   authService = inject(AuthService);
-  private db = inject(Firestore)
+  private db = inject(Firestore);
   private storage = inject(Storage);
-  private  userID = this.authService.currentUser()?.uid;
   public progress = 0;
 
-  async images(event:any){
-    const file = event.target.files[0]
-    if (!file){
-      console.log("Error Loading File")
-      return
+  async images(event: any){
+    const file = event.target.files[0];
+    if (!file) {
+      console.log('Error Loading File');
+      return;
     }
 
-    const filePath = `anything/${file.name}`
+    const uid = this.authService.currentUser()?.uid;
+    if (!uid) {
+      console.log('No user logged in');
+      return;
+    }
+
+    //paths in storage
+    const filePath = `avatars/${uid}/profile.jpg`;
     const storageRef = ref(this.storage,filePath)
     const uploadTasks = uploadBytesResumable(storageRef, file)
     uploadTasks.on(
@@ -35,20 +41,16 @@ export class Upload {
       },
       ()=>{
         getDownloadURL(uploadTasks.snapshot.ref).then(async(downloadUrl)=>{
-          await this.updateUser(this.userID!, downloadUrl)
+          await this.updateUser(uid!, downloadUrl)
         }).catch((error:any)=>{
           console.log(error.code);
         })
       }
+   
+  )}
 
-    )
-  } 
-
- private  async updateUser(uid:string, dp:string){
-    const userRef = doc(this.db , 'users' , uid);
-    await updateDoc(userRef, {
-      dp,
-    })
+  private async updateUser(uid: string, dp: string) {
+    const userRef = doc(this.db, 'users', uid);
+    await updateDoc(userRef, { dp });
   }
-  
 }

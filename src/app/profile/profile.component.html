@@ -1,3 +1,154 @@
-<p>
-  profile works!
-</p>
+<ion-header class="ion-no-border">
+  <div class="profile-header">
+    <button class="back-btn" routerLink="/settings">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </button>
+    <h1>Profile</h1>
+    <div class="spacer"></div>
+  </div>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="scroll-content">
+
+    <!-- Avatar -->
+    <div class="avatar-section" (click)="file.click()">
+      <div class="avatar-wrap">
+        <ion-avatar class="profile-avatar">
+          <!-- @if (!isAuthReady()) {
+            <div class="avatar-skeleton"></div>
+          } @else if (isUploadingAvatar()) {
+            <div class="avatar-loading">
+              <ion-icon name="sync-outline" class="spin"></ion-icon>
+            </div>
+          } @else { -->
+            <img
+              [src]="userProfileImage() ?? 'assets/icon/Todo-Logo.png'"
+              alt="Profile photo" />
+          <!-- } -->
+          
+        </ion-avatar>
+        <div class="avatar-edit-badge">
+          <ion-icon
+            [name]="isUploadingAvatar() ? 'sync-outline' : 'camera-outline'"
+            [class.spin]="isUploadingAvatar()">
+          </ion-icon>
+        </div>
+      </div>
+      <p class="avatar-hint">Tap to change photo</p>
+    </div>
+
+    <input type="file" #file style="display:none" accept="image/*" (change)="uploadvatar($event)">
+
+    <!-- Name Edit -->
+    <div class="info-section">
+      <div class="info-card">
+        <div class="info-row">
+          <div class="info-left">
+            <div class="info-icon"><ion-icon name="person-outline"></ion-icon></div>
+            <div class="info-text">
+              <span class="info-label">Display Name</span>
+              @if (isEditingName()) {
+                <input
+                  class="name-input"
+                  type="text"
+                  [ngModel]="editedName()"
+                  (ngModelChange)="editedName.set($event)"
+                  [placeholder]="dbUser.name"
+                  autofocus>
+              } @else {
+                <span class="info-value">{{ editedName() || 'Tap to set name' }}</span>
+              }
+            </div>
+          </div>
+
+          <!-- Edit / Save / Cancel actions -->
+          <div class="info-actions">
+            @if (isEditingName()) {
+              <button class="action-btn save" (click)="saveName()" [disabled]="isSavingName()">
+                @if (isSavingName()) {
+                  <ion-icon name="sync-outline" class="spin"></ion-icon>
+                } @else {
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                }
+              </button>
+              <button class="action-btn cancel" (click)="cancelEditing()">
+                <ion-icon name="close-outline"></ion-icon>
+              </button>
+            } @else {
+              <button class="action-btn edit" (click)="startEditing()">
+                <ion-icon name="pencil-outline"></ion-icon>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="divider-line"></div>
+
+        <!-- Email (read only) -->
+        <div class="info-row no-border">
+          <div class="info-left">
+            <div class="info-icon"><ion-icon name="mail-outline"></ion-icon></div>
+            <div class="info-text">
+              <span class="info-label">Email</span>
+              <span class="info-value">{{ dbUser.email || '—' }}</span>
+            </div>
+          </div>
+          <span class="readonly-tag">Read only</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-section">
+      <h3 class="stats-title">Your Stats</h3>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <ion-icon name="checkmark-circle-outline" class="stat-icon completed"></ion-icon>
+          <span class="stat-value">{{ completedCount() }}</span>
+          <span class="stat-label">Done</span>
+        </div>
+        <div class="stat-card">
+          <ion-icon name="calendar-outline" class="stat-icon active"></ion-icon>
+          <span class="stat-value">{{ activeCount() }}</span>
+          <span class="stat-label">Active</span>
+        </div>
+        <div class="stat-card highlight">
+          <ion-icon name="trophy-outline" class="stat-icon trophy"></ion-icon>
+          <span class="stat-value">Pro</span>
+          <span class="stat-label">Level</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Save success toast -->
+    @if (saveSuccess()) {
+      <div class="toast">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>
+        Name updated successfully
+      </div>
+    }
+
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <nav class="bottom-nav">
+    <a routerLink="/dashboard" class="nav-item">
+      <ion-icon name="grid-outline"></ion-icon>
+      <span>Tasks</span>
+    </a>
+    <a routerLink="/calendar" class="nav-item">
+      <ion-icon name="calendar-clear-outline"></ion-icon>
+      <span>Calendar</span>
+    </a>
+    <a routerLink="/stats" class="nav-item">
+      <ion-icon name="analytics-outline"></ion-icon>
+      <span>Stats</span>
+    </a>
+    <a routerLink="/settings" class="nav-item active">
+      <ion-icon name="settings-outline"></ion-icon>
+      <span>Settings</span>
+    </a>
+  </nav>
+</ion-footer>

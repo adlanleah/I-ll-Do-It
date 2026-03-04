@@ -317,9 +317,12 @@
 
 /* ─── FAB ────────────────────────────────────────── */
 .custom-fab {
+  --bottom: 90px;  // 👈 move it here, not inside ion-fab-button
+  --end: 16px;
+
   ion-fab-button {
-    --background: var(--primary);
-    --color: var(--bg-dark);
+    --background: #13ecc8;
+    --color: #0d1f1c;
     --box-shadow: 0 8px 24px rgba(19, 236, 200, 0.35);
     --border-radius: 50%;
   }
@@ -339,6 +342,7 @@
   justify-content: space-around;
   align-items: center;
   z-index: 100;
+  padding-right: 72px;
 }
 
 .nav-item {

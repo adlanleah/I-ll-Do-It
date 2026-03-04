@@ -61,7 +61,8 @@
           </div>
 
           <!-- Month/Year navigation -->
-          <div class="cal-nav">
+          <div class="picker-sheet-inner">
+            <div class="cal-nav">
             <button type="button" class="cal-nav-btn" (click)="changePickerMonth(-1)">
               <ion-icon name="chevron-back-outline"></ion-icon>
             </button>
@@ -128,6 +129,7 @@
                 <button type="button" class="ampm-btn" [class.active]="pickerAmPm === 'PM'" (click)="pickerAmPm = 'PM'">PM</button>
               </div>
             </div>
+          </div>
           </div>
 
         </div>

@@ -8,11 +8,10 @@
         <p class="summary">{{ taskCountLabel() }}</p>
       </div>
       <div class="actions">
-        <button class="settings-btn" routerLink="/settings">
-          <ion-icon name="settings-outline"></ion-icon>
-        </button>
-        <ion-avatar class="avatar">
-          <img [src]="userProfileImage" alt="Profile" />
+        <ion-avatar class="avatar" routerLink="/settings">
+          <img
+            [src]="userProfileImage() ?? 'assets/icon/Todo-Logo.png'"
+            alt="Profile" />
         </ion-avatar>
       </div>
     </header>
@@ -25,9 +24,9 @@
           type="text"
           placeholder="Search tasks..."
           class="search-input"
-          [(ngModel)]="searchQuery"
-          (input)="onSearch()">
-        @if (searchQuery) {
+          [value]="searchQuery()"
+          (input)="onSearch($event)">
+        @if (searchQuery()) {
           <button class="search-clear" (click)="clearSearch()">
             <ion-icon name="close-outline"></ion-icon>
           </button>
@@ -106,11 +105,11 @@
     </div>
 
     <!-- FAB -->
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="custom-fab">
-      <ion-fab-button routerLink="/add-task">
-        <ion-icon name="add"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="custom-fab" style="--bottom: 90px;">
+    <ion-fab-button routerLink="/add-task">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
     <!-- Bottom Nav -->
     <nav class="bottom-nav">
@@ -126,10 +125,10 @@
         <ion-icon name="analytics-outline"></ion-icon>
         <span>Stats</span>
       </a>
-      <!-- <a routerLink="/settings" class="nav-item">
+      <a routerLink="/profile" class="nav-item">
         <ion-icon name="person-outline"></ion-icon>
         <span>Profile</span>
-      </a> -->
+      </a>
     </nav>
 
   </div>

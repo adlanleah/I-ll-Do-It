@@ -136,7 +136,7 @@ export class TaskComponent implements OnInit {
   }
 
   ngOnInit() {
-    const nav = this.router.getCurrentNavigation();
+    const nav = this.router.currentNavigation();
     if (nav?.extras.state?.['prefilledDate']) {
       const d = new Date(nav.extras.state['prefilledDate']);
       this.taskForm.patchValue({ deadline: d.toISOString() });

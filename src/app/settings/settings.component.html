@@ -11,35 +11,49 @@
 <ion-content [fullscreen]="true">
   <div class="scroll-content">
 
-    <!-- Profile -->
-    <section class="profile-section" (click)="file.click()">
+    <section class="profile-section">
       <div class="avatar-wrap">
         <ion-avatar class="profile-avatar">
-          <img [src]="userProfileImage  ?  userProfileImage: 'assets/icon/Todo-Logo.png'" [alt]="userProfileImage" />
+          @if (!isAuthReady()) {
+            <div class="avatar-skeleton"></div>
+          } @else {
+            <img
+              [src]="userProfileImage() ?? 'assets/icon/Todo-Logo.png'"
+              alt="Profile photo" />
+          }
         </ion-avatar>
-        <div class="avatar-edit-badge">
-          <ion-icon name="camera-outline"></ion-icon>
-        </div>
+        <!-- arrow indicator to signal it's tappable -->
+        <!-- <div class="avatar-edit-badge">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </div> -->
       </div>
-      <h2 class="profile-name">{{ authService.currentUser()?.displayName || 'Your Name' }}</h2>
-      <p class="profile-email">{{ authService.currentUser()?.email || 'Tap avatar to change photo' }}</p>
+      <h2 class="profile-name">
+        {{ userName() || authService.currentUser()?.displayName || 'Your Name' }}
+      </h2>
+      <p class="profile-email">
+        {{ authService.currentUser()?.email || 'No email' }}
+      </p>
     </section>
-    <input type="file" #file [style]="{display: 'none'}" accept="image/*" (change)="uploadvatar($event, userProfileImage)">
 
     <!-- ACCOUNT -->
     <section class="settings-group">
       <h3 class="group-title">Account</h3>
       <div class="list-container">
-        <div class="list-item">
+    
+        <div class="list-item" routerLink="/profile">
           <div class="item-left">
-            <div class="icon-box"><ion-icon name="person-outline"></ion-icon></div>
+            <div class="icon-box">
+              <ion-icon name="person-outline"></ion-icon>
+            </div>
             <span>Profile</span>
           </div>
           <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
         </div>
         <div class="list-item no-border">
           <div class="item-left">
-            <div class="icon-box"><ion-icon name="cloud-sync-outline"></ion-icon></div>
+            <div class="icon-box">
+              <ion-icon name="cloud-sync-outline"></ion-icon>
+            </div>
             <span>Sync Preferences</span>
           </div>
           <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
@@ -53,14 +67,18 @@
       <div class="list-container">
         <div class="list-item">
           <div class="item-left">
-            <div class="icon-box"><ion-icon name="notifications-outline"></ion-icon></div>
+            <div class="icon-box">
+              <ion-icon name="notifications-outline"></ion-icon>
+            </div>
             <span>Notifications</span>
           </div>
           <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
         </div>
         <div class="list-item no-border" (click)="toggleTheme()">
           <div class="item-left">
-            <div class="icon-box"><ion-icon name="moon-outline"></ion-icon></div>
+            <div class="icon-box">
+              <ion-icon name="moon-outline"></ion-icon>
+            </div>
             <div class="label-stack">
               <span>Appearance</span>
               <small>Dark Mode</small>
@@ -79,14 +97,18 @@
       <div class="list-container">
         <div class="list-item">
           <div class="item-left">
-            <div class="icon-box"><ion-icon name="help-circle-outline"></ion-icon></div>
+            <div class="icon-box">
+              <ion-icon name="help-circle-outline"></ion-icon>
+            </div>
             <span>Help Center</span>
           </div>
           <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
         </div>
         <div class="list-item no-border">
           <div class="item-left">
-            <div class="icon-box"><ion-icon name="information-circle-outline"></ion-icon></div>
+            <div class="icon-box">
+              <ion-icon name="information-circle-outline"></ion-icon>
+            </div>
             <span>About Version</span>
           </div>
           <div class="item-right">

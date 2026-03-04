@@ -1,7 +1,6 @@
 import { AuthService } from './../Services/auth';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { IonContent, IonIcon, IonFab, IonFabButton, IonAvatar } from "@ionic/angular/standalone";
 import { addIcons } from 'ionicons';
 import {
@@ -9,6 +8,8 @@ import {
   checkmarkCircleOutline, checkmarkSharp, closeOutline, grid,
   personOutline, searchOutline, settingsOutline, timeOutline, trashOutline, addOutline
 } from 'ionicons/icons';
+import { doc, docData, Firestore } from '@angular/fire/firestore';
+import { getDownloadURL, ref, Storage } from '@angular/fire/storage';
 
 type TabKey = 'today' | 'upcoming' | 'completed' | 'all';
 
@@ -16,46 +17,33 @@ type TabKey = 'today' | 'upcoming' | 'completed' | 'all';
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  imports: [IonContent, IonFab, IonFabButton, IonIcon, RouterLink, IonAvatar, FormsModule],
+  imports: [IonContent, IonFab, IonFabButton, IonIcon, RouterLink, IonAvatar],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   public authService = inject(AuthService);
-  userProfileImage = 'assets/icon/Todo-Logo.png';
+  private db = inject(Firestore);
+  private storage = inject(Storage);
 
-  searchQuery = '';
+  userProfileImage = signal<string | null>(null);
+  private profileSub: any;
 
-  onSearch() {}
-  clearSearch() { this.searchQuery = ''; }
+  // ✅ signal so computed() can track it
+  searchQuery = signal('');
+  onSearch(event: any) { this.searchQuery.set(event.target.value); }
+  clearSearch() { this.searchQuery.set(''); }
 
   activeTab = signal<TabKey>('today');
 
   setTab(key: TabKey) {
     this.activeTab.set(key);
-    this.searchQuery = '';
+    this.searchQuery.set('');
   }
 
-  //Tabb key functions
   tabs = [
-    {
-      key: 'today' as TabKey,
-      label: 'Today',
-      count: computed(() => this.todayTasks().length)
-    },
-    {
-      key: 'upcoming' as TabKey,
-      label: 'Upcoming',
-      count: computed(() => this.upcomingTasks().length)
-    },
-    {
-      key: 'completed' as TabKey,
-      label: 'Completed',
-      count: computed(() => this.completedTasks().length)
-    },
-    {
-      key: 'all' as TabKey,
-      label: 'All',
-      count: computed(() => this.authService.tasks().length)
-    },
+    { key: 'today'     as TabKey, label: 'Today',     count: computed(() => this.todayTasks().length) },
+    { key: 'upcoming'  as TabKey, label: 'Upcoming',  count: computed(() => this.upcomingTasks().length) },
+    { key: 'completed' as TabKey, label: 'Completed', count: computed(() => this.completedTasks().length) },
+    { key: 'all'       as TabKey, label: 'All',       count: computed(() => this.authService.tasks().length) },
   ];
 
   private todayStr = new Date().toDateString();
@@ -63,7 +51,7 @@ export class DashboardComponent implements OnInit {
   todayTasks = computed(() =>
     this.authService.tasks().filter(t => {
       if (t.completed) return false;
-      if (!t.deadline) return true; // tasks with no deadline show in today
+      if (!t.deadline) return true;
       return new Date(t.deadline).toDateString() === this.todayStr;
     })
   );
@@ -82,10 +70,9 @@ export class DashboardComponent implements OnInit {
     this.authService.tasks().filter(t => t.completed)
   );
 
-  //filter
   filteredTasks = computed(() => {
     const tab = this.activeTab();
-    const q   = this.searchQuery.toLowerCase().trim();
+    const q   = this.searchQuery().toLowerCase().trim();
 
     let base: any[];
     switch (tab) {
@@ -104,9 +91,8 @@ export class DashboardComponent implements OnInit {
     );
   });
 
-  // sectioning the tabs
   sectionTitle = computed(() => {
-    const q = this.searchQuery.trim();
+    const q = this.searchQuery().trim();
     if (q) return `Results for "${q}"`;
     switch (this.activeTab()) {
       case 'today':     return "Today's Priority";
@@ -116,9 +102,8 @@ export class DashboardComponent implements OnInit {
     }
   });
 
-  // header
   taskCountLabel = computed(() => {
-    const tab = this.activeTab();
+    const tab   = this.activeTab();
     const count = this.filteredTasks().length;
     if (tab === 'today')     return `${count} task${count !== 1 ? 's' : ''} for today`;
     if (tab === 'upcoming')  return `${count} upcoming task${count !== 1 ? 's' : ''}`;
@@ -127,7 +112,7 @@ export class DashboardComponent implements OnInit {
   });
 
   emptyIcon = computed(() => {
-    if (this.searchQuery) return 'search-outline';
+    if (this.searchQuery()) return 'search-outline';
     switch (this.activeTab()) {
       case 'completed': return 'checkmark-circle-outline';
       case 'upcoming':  return 'calendar-outline';
@@ -136,7 +121,7 @@ export class DashboardComponent implements OnInit {
   });
 
   emptyMessage = computed(() => {
-    if (this.searchQuery) return `No tasks match "${this.searchQuery}"`;
+    if (this.searchQuery()) return `No tasks match "${this.searchQuery()}"`;
     switch (this.activeTab()) {
       case 'today':     return "No tasks for today. Tap + to add one!";
       case 'upcoming':  return "Nothing upcoming. You're all caught up!";
@@ -145,18 +130,15 @@ export class DashboardComponent implements OnInit {
     }
   });
 
-  // deadline display
   formatDeadline(deadline: string | null | undefined): string {
     if (!deadline) return 'All Day';
-    const d = new Date(deadline);
-    const todayStr = new Date().toDateString();
+    const d           = new Date(deadline);
+    const todayStr    = new Date().toDateString();
     const tomorrowStr = new Date(Date.now() + 86400000).toDateString();
+    const timeStr     = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
 
-    const timeStr = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-
-    if (d.toDateString() === todayStr)     return `Today, ${timeStr}`;
-    if (d.toDateString() === tomorrowStr)  return `Tomorrow, ${timeStr}`;
-
+    if (d.toDateString() === todayStr)    return `Today, ${timeStr}`;
+    if (d.toDateString() === tomorrowStr) return `Tomorrow, ${timeStr}`;
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + `, ${timeStr}`;
   }
 
@@ -174,10 +156,18 @@ export class DashboardComponent implements OnInit {
       analyticsOutline, personOutline, settingsOutline, searchOutline,
       checkmarkSharp, checkmarkCircleOutline, timeOutline, closeOutline
     });
+
+    effect(() => {
+      const uid = this.authService.currentUser()?.uid;
+      if (!uid) return;
+
+     
+    });
   }
 
-  ngOnInit() {
-    const saved = localStorage.getItem('profileImage');
-    if (saved) this.userProfileImage = saved;
+  ngOnInit() {}
+
+  ngOnDestroy() {
+    this.profileSub?.unsubscribe();
   }
 }
