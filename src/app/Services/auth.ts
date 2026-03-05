@@ -101,7 +101,7 @@ export class AuthService implements OnDestroy{
       uid,
       name,
       createdAt: serverTimestamp()
-    });
+    }, {merge:true});
   }
 
   async loginWithEmail(email: string, pass: string) {

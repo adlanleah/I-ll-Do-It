@@ -55,7 +55,7 @@ effect(async () =>{
       if(user){
         const uid= user.uid;
         await this.imaged.getUserData(uid)
-        // await this.getUserData(uid);
+        this.dbUser = this.imaged.dbUser;
         this.userProfileImage.set(this.dbUser.dp);
         console.log(this.dbUser)
       }
@@ -77,6 +77,8 @@ effect(async () =>{
 
   async uploadvatar(event: any) {
     this.isUploadingAvatar.set(true);
+    this.demoUpload.images(event);
+    this.isUploadingAvatar.set(false);
     // try {
     //   const newUrl = await this.demoUpload.images(event);
     //   if (newUrl) this.userProfileImage.set(newUrl);

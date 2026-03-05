@@ -11,6 +11,7 @@ import {
 import { RouterLink } from '@angular/router';
 import { doc, docData, Firestore } from '@angular/fire/firestore';
 import { getDownloadURL, ref, Storage } from '@angular/fire/storage';
+import { Images } from '../Services/images';
 
 @Component({
   selector: 'app-settings',
@@ -22,6 +23,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   authService = inject(AuthService);
   private db = inject(Firestore);
   private storage = inject(Storage);
+  imaged = inject(Images)
 
   isDarkMode = signal(true);
   appVersion = '2.4.0';
@@ -39,10 +41,17 @@ export class SettingsComponent implements OnInit, OnDestroy {
       calendarClearOutline, gridOutline, timerOutline, syncOutline
     });
 
-    effect(() => {
-      const uid = this.authService.currentUser()?.uid;
-      if (!uid) return;
-    });
+      effect(async () => {
+  const uid = this.authService.currentUser()?.uid;
+  if (!uid) return;
+
+  await this.imaged.getUserData(uid);
+
+  this.userProfileImage.set(this.imaged.dbUser?.dp || null);
+  this.userName.set(this.imaged.dbUser?.name || '');
+
+  this.isAuthReady.set(true);
+});
   }
 
   toggleTheme() {

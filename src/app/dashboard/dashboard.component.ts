@@ -10,6 +10,7 @@ import {
 } from 'ionicons/icons';
 import { doc, docData, Firestore } from '@angular/fire/firestore';
 import { getDownloadURL, ref, Storage } from '@angular/fire/storage';
+import { Images } from '../Services/images';
 
 type TabKey = 'today' | 'upcoming' | 'completed' | 'all';
 
@@ -23,11 +24,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public authService = inject(AuthService);
   private db = inject(Firestore);
   private storage = inject(Storage);
+  imaged = inject(Images)
 
   userProfileImage = signal<string | null>(null);
   private profileSub: any;
 
-  // ✅ signal so computed() can track it
+  //signal so computed() can track it
   searchQuery = signal('');
   onSearch(event: any) { this.searchQuery.set(event.target.value); }
   clearSearch() { this.searchQuery.set(''); }
@@ -157,12 +159,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
       checkmarkSharp, checkmarkCircleOutline, timeOutline, closeOutline
     });
 
-    effect(() => {
-      const uid = this.authService.currentUser()?.uid;
-      if (!uid) return;
+    effect(async () => {
+    const uid = this.authService.currentUser()?.uid;
+    if (!uid) return;
 
-     
-    });
+    await this.imaged.getUserData(uid);
+
+    this.userProfileImage.set(this.imaged.dbUser?.dp || null);
+  });
   }
 
   ngOnInit() {}
