@@ -11,6 +11,7 @@ import {
 import { doc, docData, Firestore } from '@angular/fire/firestore';
 import { getDownloadURL, ref, Storage } from '@angular/fire/storage';
 import { Images } from '../Services/images';
+import { Cloud } from '../Services/cloud';
 
 type TabKey = 'today' | 'upcoming' | 'completed' | 'all';
 
@@ -25,10 +26,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private db = inject(Firestore);
   private storage = inject(Storage);
   imaged = inject(Images)
+  ronnie = inject(Cloud)
 
   userProfileImage = signal<string | null>(null);
   private profileSub: any;
-
+  
   //signal so computed() can track it
   searchQuery = signal('');
   onSearch(event: any) { this.searchQuery.set(event.target.value); }
@@ -167,6 +169,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.userProfileImage.set(this.imaged.dbUser?.dp || null);
   });
+  }
+
+  async fecthsds(){
+    await this.ronnie.bugRonnie();
   }
 
   ngOnInit() {}

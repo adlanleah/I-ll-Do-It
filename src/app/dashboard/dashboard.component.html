@@ -106,7 +106,9 @@
 
     <!-- FAB -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="custom-fab" style="--bottom: 90px;">
-    <ion-fab-button routerLink="/add-task">
+    <ion-fab-button
+    (click) = "fecthsds()"
+     routerLink="/add-task">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
